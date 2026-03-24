@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hei Obed</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f5f1e8;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            max-width: 600px;
+            text-align: center;
+            animation: slideFromMailbox 1s ease-out;
+            display: none;
+        }
+
+        @keyframes slideFromMailbox {
+            0% {
+                opacity: 0;
+                transform: translateY(100px) rotateX(45deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        .mailbox {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 100px;
+            animation: mailboxBounce 1.2s ease-out;
+            pointer-events: none;
+            z-index: 0;
+            display: none;
+        }
+
+        @keyframes mailboxBounce {
+            0% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-200px) scale(0.8);
+            }
+        }
+
+        .flying-letter-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            animation: letterFlyIn 1.5s ease-out forwards;
+        }
+
+        @keyframes letterFlyIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -150%) rotateY(90deg) rotateZ(20deg);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) rotateY(0deg) rotateZ(0deg);
+            }
+        }
+
+        .flying-letter {
+            font-size: 150px;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+        }
+
+        h1 {
+            color: #ff1493;
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: slideInDown 0.8s ease-out 0.3s both, pulse 2s ease-in-out 1.2s infinite;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .invitation-text {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            animation: slideInUp 0.8s ease-out 0.5s both;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .date-time {
+            font-size: 1.3em;
+            color: #ff1493;
+            font-weight: bold;
+            margin-bottom: 30px;
+            background: #ffe4f0;
+            padding: 20px;
+            border-radius: 10px;
+            animation: slideInUp 0.8s ease-out 0.7s both, floatingBox 3s ease-in-out 1.6s infinite;
+        }
+
+        @keyframes floatingBox {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .menu-info {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+            animation: slideInUp 0.8s ease-out 0.9s both, fadeInOut 3s ease-in-out 1.8s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            animation: slideInUp 0.8s ease-out 1.1s both;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        #invitationContainer {
+            display: none;
+        }
+
+        #yesBtn {
+            background: #ff1493;
+            color: white;
+            min-width: 120px;
+            animation: buttonGlow 2s ease-in-out 1.3s infinite;
+        }
+
+        @keyframes buttonGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 20, 147, 0.7); }
+            50% { box-shadow: 0 0 20px 10px rgba(255, 20, 147, 0); }
+        }
+
+        #yesBtn:hover {
+            background: #ff69b4;
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(255, 20, 147, 0.6);
+        }
+
+        #noBtn {
+            background: #ddd;
+            color: #666;
+            min-width: 120px;
+            transition: all 0.3s ease;
+        }
+
+        #noBtn:hover {
+            background: #ccc;
+            transform: translateX(-20px);
+        }
+
+        .try-again-message {
+            display: none;
+            color: #ff1493;
+            font-size: 1.2em;
+            margin-top: 20px;
+            font-weight: bold;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Thank You Letter Styles */
+        #letterContainer {
+            display: none;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        #letterContainer.show {
+            display: flex;
+        }
+
+        .letter {
+            background: #fff5e6;
+            border: 3px solid #ff1493;
+            border-radius: 10px;
+            padding: 40px;
+            animation: letterSlideIn 0.8s ease-out, heartFloat 3s ease-in-out 0.8s infinite;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @keyframes letterSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotateY(90deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg);
+            }
+        }
+
+        @keyframes heartFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .letter-text {
+            font-size: 1.8em;
+            color: #ff1493;
+            font-family: 'Cursive', cursive;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            animation: textFlipIn 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes textFlipIn {
+            from {
+                opacity: 0;
+                transform: rotateX(-90deg);
+            }
+            to {
+                opacity: 1;
+                transform: rotateX(0deg);
+            }
+        }
+
+        #menuBtn {
+            background: #ff1493;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            margin-top: 30px;
+            animation: slideInUp 0.8s ease-out 0.6s both, menuButtonPulse 2s ease-in-out 1.4s infinite;
+        }
+
+        @keyframes menuButtonPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 20, 147, 0.7); }
+            50% { box-shadow: 0 0 15px 5px rgba(255, 20, 147, 0); }
+        }
+
+        #menuBtn:hover {
+            background: #ff69b4;
+            transform: scale(1.1);
+        }
+
+        .heart {
+            display: inline-block;
+            color: #ff1493;
+            animation: heartBeat 1.2s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.3); }
+            50% { transform: scale(1); }
+        }
+
+        /* Envelope Opening Styles */
+        .envelope-container {
+            display: none;
+            animation: slideInUp 0.8s ease-out both;
+        }
+
+
+        #letterContainer.show {
+            display: flex;
+        }
+
+        .envelope-slider {
+            background: linear-gradient(135deg, #ffe4f0 0%, #ffb3d9 100%);
+            border: 3px solid #ff1493;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 auto 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+            max-width: 600px;
+        }
+
+        .envelope-text {
+            color: #ff1493;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            pointer-events: none;
+        }
+
+        .drag-button {
+            background: white;
+            border: 3px dashed #ff1493;
+            color: #ff1493;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: grab;
+            transition: all 0.2s ease;
+            user-select: none;
+            display: inline-block;
+            animation: dragButtonPulse 1.5s ease-in-out infinite;
+        }
+
+        .drag-button:active {
+            cursor: grabbing;
+        }
+
+        @keyframes dragButtonPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .drag-progress {
+            height: 4px;
+            background: #ff1493;
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s ease;
+            margin-top: 10px;
+        }
+
+        .letter-hidden {
+            display: none;
+        }
+
+        .letter-opened {
+            animation: letterOpen 0.6s ease-out;
+        }
+
+        @keyframes letterOpen {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Flying Letter Animation -->
+    <div class="flying-letter-container" id="flyingLetterContainer">
+        <div class="flying-letter">💌</div>
+    </div>
+
+    <!-- Letter Container (Outside main container) -->
+    <div id="letterContainer">
+        <!-- Envelope Opening -->
+        <div class="envelope-container" id="envelopeContainer">
+            <div class="envelope-text">Du har fått brev!</div>
+            <div class="envelope-slider">
+                <div class="envelope-text">Riv for å åpne</div>
+                <button class="drag-button" id="dragButton">← Dra hit →</button>
+                <div class="drag-progress" id="dragProgress"></div>
+            </div>
+        </div>
+
+        <!-- Letter Content -->
+        <div class="letter" id="letterContent">
+            <!-- Question Phase -->
+            <div id="questionPhase">
+                <h1>💌 Obed 💌</h1>
+                <div class="invitation-text">
+                    <p>Vil du jeg skal overnatte deg?</p>
+                </div>
+                <div class="date-time">
+                    
+                </div>
+                <div class="menu-info">
+                   
+                </div>
+                <div class="buttons">
+                    <button id="yesBtn">YES</button>
+                    <button id="noBtn">NO</button>
+                </div>
+                <div class="try-again-message" id="tryAgainMsg">Same... BITCH</div>
+            </div>
+
+            <!-- Thank You Phase -->
+            <div id="thankYouPhase" style="display: none;">
+                <div class="letter-text">
+                    Riktig svar, mannen min😉🧸<span class="heart">❤️</span>
+                </div>
+                <button id="menuBtn">Trykk her</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container (Hidden - not used anymore) -->
+    <div class="container" id="container">
+    </div>
+
+    <script>
+        // Initial state - show flying letter animation
+        window.addEventListener('load', function() {
+            const flyingLetterContainer = document.getElementById('flyingLetterContainer');
+            const letterContainer = document.getElementById('letterContainer');
+            const envelopeContainer = document.getElementById('envelopeContainer');
+            const letterContent = document.getElementById('letterContent');
+
+            // After letter flies in, show the envelope
+            setTimeout(function() {
+                flyingLetterContainer.style.display = 'none';
+                letterContainer.classList.add('show');
+                envelopeContainer.style.display = 'block';
+                letterContent.style.display = 'none';
+            }, 1500); // Wait for animation to finish
+        });
+
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const tryAgainMsg = document.getElementById('tryAgainMsg');
+        const letterContainer = document.getElementById('letterContainer');
+        const menuBtn = document.getElementById('menuBtn');
+
+        // Yes button - show thank you message
+        yesBtn.addEventListener('click', function() {
+            document.getElementById('questionPhase').style.display = 'none';
+            document.getElementById('thankYouPhase').style.display = 'block';
+        });
+
+        // No button - shows try again message
+        noBtn.addEventListener('click', function() {
+            tryAgainMsg.style.display = 'block';
+            setTimeout(function() {
+                tryAgainMsg.style.display = 'none';
+            }, 3000);
+        });
+
+        // Menu button - opens the PDF menu
+        menuBtn.addEventListener('click', function() {
+            window.open('IMG_5236.GIF', '_blank');
+        });
+
+        // Envelope drag functionality
+        const dragButton = document.getElementById('dragButton');
+        const dragProgress = document.getElementById('dragProgress');
+        const envelopeContainer = document.getElementById('envelopeContainer');
+        const letterContent = document.getElementById('letterContent');
+        
+        let isDragging = false;
+        let dragAmount = 0;
+        const dragThreshold = 150; // pixels needed to drag to open
+
+        dragButton.addEventListener('mousedown', function() {
+            isDragging = true;
+            dragButton.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+
+            const rect = dragButton.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+
+            // Calculate drag distance from initial position
+            dragAmount = Math.max(0, e.clientX - centerX);
+
+            if (dragAmount > 0) {
+                dragButton.style.transform = `translateX(${Math.min(dragAmount, dragThreshold)}px)`;
+                dragProgress.style.width = Math.min((dragAmount / dragThreshold) * 100, 100) + '%';
+            }
+
+            // Check if dragged far enough
+            if (dragAmount >= dragThreshold) {
+                openLetter();
+                isDragging = false;
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (isDragging) {
+                isDragging = false;
+                dragButton.style.cursor = 'grab';
+                // Reset if not dragged far enough
+                if (dragAmount < dragThreshold) {
+                    dragButton.style.transform = 'translateX(0)';
+                    dragProgress.style.width = '0%';
+                }
+                dragAmount = 0;
+            }
+        });
+
+        function openLetter() {
+            document.getElementById('envelopeContainer').style.display = 'none';
+            document.getElementById('letterContent').style.display = 'block';
+            document.getElementById('letterContent').classList.add('letter-opened');
+        }
+
+        // No button - shows try again message
+        noBtn.addEventListener('click', function() {
+            tryAgainMsg.style.display = 'block';
+            setTimeout(function() {
+                tryAgainMsg.style.display = 'none';
+            }, 3000);
+        });
+
+        // Menu button - opens the PDF menu
+        menuBtn.addEventListener('click', function() {
+            window.open('Dokument uten navn-3.pdf', '_blank');
+        });
+
+        // Make sure no button can't be clicked easily
+        noBtn.addEventListener('mouseenter', function() {
+            // Optional: make button move away on hover
+            // const randomX = Math.random() * 20 - 10;
+            // const randomY = Math.random() * 20 - 10;
+            // this.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        });
+    </script>
+</body>
+</html>
